@@ -71,7 +71,7 @@ class GeneralizedAssignment():
         if self.hard_assignment:
             init_dict = dict(init_assignment)
             for a, t in self.hard_assignment.items():
-                init_dict[a] = init_dict[a] | t
+                init_dict[a] = init_dict[a] | t         # union set
             init_assignment = frozendict(init_dict)
             
         return init_assignment
@@ -88,12 +88,12 @@ class GeneralizedAssignment():
         
         # Initialize a map of assignments and associated profits
         profits = {s:0 for s in starts}
-        
+
         while open_set:
 
             # Explore the most promising node
             current = max(open_set, key=lambda n: profits[n])
-            
+
             # Move the current node from the open set to the closed set
             open_set.remove(current)
             closed_set.add(current)
@@ -271,7 +271,8 @@ def main():
     profit = {('a', 't1'): 3, ('b', 't1'): 1, ('c', 't1'): 2,
               ('a', 't2'): 1, ('b', 't2'): 3, ('c', 't2'): 2}
         
-    # Optional hard assignments (map of agent: set of tasks)
+    # Optional hard assignments (map of agent: frozenset({tasks})) - or empty if not preference
+    # hard_assignment = {'c': frozenset({'t1'})}
     hard_assignment = {}
 
     # Calculate maximum assignment
@@ -279,8 +280,8 @@ def main():
                           lambda t: task_budget[t], task_cost,
                           lambda a, t: profit[(a,t)],
                           hard_assignment=hard_assignment,
-                          complete=True,
-                          fair=True)
+                          complete=False,
+                          fair=False)
 
 if __name__ == "__main__":
     main()
